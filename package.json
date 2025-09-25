@@ -1,0 +1,23 @@
+{
+  "name": "paste-select-monorepo",
+  "version": "1.0.0",
+  "description": "Monorepo for @pastebox/paste-select packages",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "lint": "pnpm -r lint",
+    "dev": "pnpm -C examples/react-vite-demo dev",
+    "release": "git tag v0.1.0 && git push --tags"
+  },
+  "keywords": [
+    "paste",
+    "bulk",
+    "validation",
+    "react",
+    "typescript"
+  ],
+  "author": "",
+  "license": "MIT"
+}

@@ -1,0 +1,58 @@
+{
+    "name": "pastebox-react",
+    "version": "0.1.0",
+    "description": "React component for bulk paste parsing/validation with counts and lists.",
+    "type": "module",
+    "author": "sagarah",
+    "homepage": "https://github.com/sagarah/paste-select#readme",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/sagarah/paste-select.git",
+        "directory": "packages/paste-react"
+    },
+    "bugs": {
+        "url": "https://github.com/sagarah/paste-select/issues"
+    },
+    "files": [
+        "dist",
+        "README.md"
+    ],
+    "peerDependencies": {
+        "react": ">=18"
+    },
+    "dependencies": {
+        "pastebox-core": "0.1.0"
+    },
+    "main": "dist/index.cjs",
+    "module": "dist/index.mjs",
+    "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "import": "./dist/index.mjs",
+            "require": "./dist/index.cjs",
+            "types": "./dist/index.d.ts"
+        }
+    },
+    "sideEffects": false,
+    "scripts": {
+        "build": "tsup src/index.ts --dts --format esm,cjs --external react",
+        "test": "vitest run",
+        "lint": "eslint ."
+    },
+    "devDependencies": {
+        "tsup": "^8.0.2",
+        "typescript": "^5.6.3",
+        "vitest": "^2.0.5",
+        "eslint": "^9.10.0",
+        "@types/react": "^18.3.5"
+    },
+    "keywords": [
+        "react",
+        "paste",
+        "bulk",
+        "validation",
+        "component",
+        "typescript"
+    ],
+    "license": "MIT"
+}
