@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PasteBox - Bulk Paste Parsing & Validation for React</title>
+    <meta name="description" content="Transform messy pasted data into clean, validated lists. Perfect for enterprise dashboards and admin panels.">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://saga95.github.io/paste-select/">
+    <meta property="og:title" content="PasteBox - Bulk Paste Parsing & Validation">
+    <meta property="og:description" content="Transform messy pasted data into clean, validated lists. Perfect for enterprise dashboards and admin panels.">
+    <meta property="og:image" content="https://saga95.github.io/paste-select/og-image.png">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://saga95.github.io/paste-select/">
+    <meta property="twitter:title" content="PasteBox - Bulk Paste Parsing & Validation">
+    <meta property="twitter:description" content="Transform messy pasted data into clean, validated lists. Perfect for enterprise dashboards and admin panels.">
+    <meta property="twitter:image" content="https://saga95.github.io/paste-select/og-image.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            color: #1f2937;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+            color: white;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .hero p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .badges {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+        
+        .badge {
+            height: 20px;
+        }
+        
+        .demo-section {
+            background: white;
+            border-radius: 16px;
+            padding: 3rem;
+            margin: 3rem 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .demo-title {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-align: center;
+            color: #1f2937;
+        }
+        
+        .demo-subtitle {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 2rem;
+        }
+        
+        .sample-data {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+        }
+        
+        .sample-data h4 {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+        
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #1f2937;
+        }
+        
+        .feature-description {
+            color: #6b7280;
+            line-height: 1.5;
+        }
+        
+        .install-section {
+            background: #1f2937;
+            color: white;
+            padding: 3rem;
+            border-radius: 16px;
+            margin: 3rem 0;
+        }
+        
+        .install-title {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .code-block {
+            background: #111827;
+            border-radius: 8px;
+            padding: 1.5rem;
+            font-family: 'Fira Code', monospace;
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+        }
+        
+        .code-block code {
+            color: #e5e7eb;
+        }
+        
+        .links-section {
+            text-align: center;
+            padding: 3rem 0;
+            color: white;
+        }
+        
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            max-width: 800px;
+            margin: 2rem auto;
+        }
+        
+        .link-btn {
+            display: inline-block;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            text-decoration: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .link-btn:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 2rem 0;
+            color: rgba(255,255,255,0.8);
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            .demo-section, .install-section {
+                padding: 2rem;
+            }
+        }
+
+        /* Demo-specific styles */
+        .demo-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        #demo-root {
+            margin: 2rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero">
+            <h1>📋 PasteBox</h1>
+            <p>Transform messy pasted data into clean, validated lists. Perfect for enterprise dashboards and admin panels.</p>
+            
+            <div class="badges">
+                <img src="https://badge.fury.io/js/pastebox-core.svg" alt="npm version" class="badge">
+                <img src="https://badge.fury.io/js/pastebox-react.svg" alt="npm version" class="badge">
+                <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT" class="badge">
+            </div>
+        </div>
+        
+        <!-- Live Demo Section -->
+        <div class="demo-section">
+            <h2 class="demo-title">🎮 Try It Live</h2>
+            <p class="demo-subtitle">Paste the sample data below or try your own messy data!</p>
+            
+            <div class="sample-data">
+                <h4>📋 Sample Data - Copy & Paste This:</h4>
+                <div style="color: #059669;">A123, B456<br>C789; INVALID-001<br>SKU-999&nbsp;&nbsp;&nbsp;&nbsp;ITEM-001<br>A123 (duplicate)</div>
+            </div>
+            
+            <div class="demo-container">
+                <div id="demo-root"></div>
+            </div>
+        </div>
+        
+        <!-- Features Section -->
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3 class="feature-title">Lightning Fast</h3>
+                <p class="feature-description">Handles 10,000+ values efficiently with smart parsing and optimized algorithms.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3 class="feature-title">Smart Parsing</h3>
+                <p class="feature-description">Auto-detects delimiters (commas, newlines, tabs, semicolons) and normalizes data.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🔍</div>
+                <h3 class="feature-title">Flexible Validation</h3>
+                <p class="feature-description">In-memory sets, async API validation, or custom validation functions.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3 class="feature-title">Visual Feedback</h3>
+                <p class="feature-description">Real-time counts, lists, and copy-to-clipboard functionality.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">⚛️</div>
+                <h3 class="feature-title">React Ready</h3>
+                <p class="feature-description">Drop-in component with full TypeScript support and modern React patterns.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🎨</div>
+                <h3 class="feature-title">Headless Core</h3>
+                <p class="feature-description">Framework-agnostic core utilities for any UI library or custom implementation.</p>
+            </div>
+        </div>
+        
+        <!-- Installation Section -->
+        <div class="install-section">
+            <h2 class="install-title">🚀 Get Started</h2>
+            
+            <div class="code-block">
+                <code># Install both packages<br>npm install pastebox-react pastebox-core</code>
+            </div>
+            
+            <div class="code-block">
+                <code>import { PasteSelect } from "pastebox-react";<br>import { inMemorySetValidator } from "pastebox-core";<br><br>const allowedValues = new Set(["A123", "B456", "C789"]);<br><br>function App() {<br>&nbsp;&nbsp;return (<br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;PasteSelect <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;validate={inMemorySetValidator(allowedValues)}<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;onChange={(result) =&gt; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log(`✅ ${result.validate.valid.length} valid`);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}}<br>&nbsp;&nbsp;&nbsp;&nbsp;/&gt;<br>&nbsp;&nbsp;);<br>}</code>
+            </div>
+        </div>
+        
+        <!-- Links Section -->
+        <div class="links-section">
+            <h2 style="margin-bottom: 2rem;">📚 Resources</h2>
+            <div class="links-grid">
+                <a href="https://github.com/saga95/paste-select" class="link-btn">
+                    📖 Documentation
+                </a>
+                <a href="https://www.npmjs.com/package/pastebox-core" class="link-btn">
+                    📦 Core Package
+                </a>
+                <a href="https://www.npmjs.com/package/pastebox-react" class="link-btn">
+                    ⚛️ React Package
+                </a>
+                <a href="https://github.com/saga95/paste-select/issues" class="link-btn">
+                    🐛 Report Issues
+                </a>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p>Made with ❤️ for the React community • <a href="https://github.com/saga95" style="color: rgba(255,255,255,0.9);">@saga95</a></p>
+        </div>
+    </div>
+
+    <!-- Demo Component -->
+    <script type="text/babel">
+        // Simple PasteSelect implementation for demo
+        const { useState, useMemo } = React;
+
+        // Simplified version of pastebox-core functions for demo
+        function parse(input, opts = {}) {
+            const {
+                delimiters = [",", "\n", "\t", ";"],
+                normalize = (v) => v.trim(),
+                caseSensitive = true,
+                maxValues = 10000
+            } = opts;
+
+            if (!input?.trim()) {
+                return { all: [], normalized: [], uniques: [], duplicates: [] };
+            }
+
+            const re = new RegExp(`[${delimiters.map(d => `\\${d}`).join("")}]`, "g");
+            const raw = input.split(re).map(normalize).filter(Boolean);
+            const limited = raw.slice(0, maxValues);
+            
+            const seen = new Map();
+            const normalized = [];
+            const uniques = [];
+            const duplicates = [];
+
+            for (const v of limited) {
+                const key = caseSensitive ? v : v.toLowerCase();
+                normalized.push(v);
+                const count = (seen.get(key) ?? 0) + 1;
+                seen.set(key, count);
+            }
+
+            for (const [key, count] of seen.entries()) {
+                if (count === 1) uniques.push(key);
+                else duplicates.push(key);
+            }
+
+            return { all: limited, normalized, uniques, duplicates };
+        }
+
+        function inMemorySetValidator(allowed) {
+            return async (values) => {
+                const valid = [];
+                const invalid = [];
+                for (const v of values) {
+                    (allowed.has(v) ? valid : invalid).push(v);
+                }
+                return { valid, invalid };
+            };
+        }
+
+        // Demo PasteSelect Component
+        function PasteSelect({ validate, onChange }) {
+            const [input, setInput] = useState("");
+            const [parseRes, setParseRes] = useState({ all: [], normalized: [], uniques: [], duplicates: [] });
+            const [valRes, setValRes] = useState({ valid: [], invalid: [] });
+            const [busy, setBusy] = useState(false);
+            const [err, setErr] = useState(null);
+
+            async function handleValidate() {
+                setBusy(true);
+                setErr(null);
+                try {
+                    const p = parse(input);
+                    setParseRes(p);
+                    const v = await validate(p.uniques);
+                    setValRes(v);
+                    onChange?.({ parse: p, validate: v });
+                } catch (e) {
+                    setErr(e?.message ?? "Validation failed");
+                } finally {
+                    setBusy(false);
+                }
+            }
+
+            return React.createElement('div', { style: { display: 'grid', gap: 12 } }, [
+                React.createElement('label', { key: 'label' }, [
+                    React.createElement('div', { 
+                        key: 'title',
+                        style: { fontWeight: 600, marginBottom: 6 } 
+                    }, 'Paste values'),
+                    React.createElement('textarea', {
+                        key: 'textarea',
+                        rows: 8,
+                        placeholder: "Paste values separated by comma, newline, tab, or semicolon…",
+                        value: input,
+                        onChange: (e) => setInput(e.target.value),
+                        style: { 
+                            width: '100%', 
+                            padding: 10, 
+                            borderRadius: 8, 
+                            border: '1px solid #ccc',
+                            fontFamily: 'Fira Code, monospace',
+                            fontSize: 14
+                        }
+                    })
+                ]),
+                
+                React.createElement('button', {
+                    key: 'button',
+                    disabled: busy,
+                    onClick: handleValidate,
+                    style: {
+                        padding: '12px 16px',
+                        borderRadius: 8,
+                        backgroundColor: busy ? '#ccc' : '#667eea',
+                        color: 'white',
+                        border: 'none',
+                        cursor: busy ? 'not-allowed' : 'pointer',
+                        fontWeight: 500,
+                        fontSize: 14
+                    }
+                }, busy ? 'Validating…' : 'Validate'),
+
+                err && React.createElement('div', {
+                    key: 'error',
+                    style: { color: 'crimson', padding: 8, backgroundColor: '#ffe6e6', borderRadius: 4 }
+                }, err),
+
+                React.createElement('div', { 
+                    key: 'badges',
+                    style: { display: 'flex', flexWrap: 'wrap', gap: 8 } 
+                }, [
+                    Badge({ key: 'total', label: 'Total', value: parseRes.all.length }),
+                    Badge({ key: 'unique', label: 'Unique', value: parseRes.uniques.length }),
+                    Badge({ key: 'duplicates', label: 'Duplicates', value: parseRes.duplicates.length }),
+                    Badge({ key: 'valid', label: 'Valid', value: valRes.valid.length, tone: 'good' }),
+                    Badge({ key: 'invalid', label: 'Invalid', value: valRes.invalid.length, tone: 'bad' })
+                ]),
+
+                React.createElement('div', {
+                    key: 'lists',
+                    style: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }
+                }, [
+                    List({ key: 'valid', title: 'Valid', items: valRes.valid }),
+                    List({ key: 'invalid', title: 'Invalid', items: valRes.invalid })
+                ])
+            ]);
+        }
+
+        function Badge({ label, value, tone }) {
+            const bg = tone === 'good' ? '#e6ffed' : tone === 'bad' ? '#ffe6e6' : '#f5f5f5';
+            const color = tone === 'good' ? '#22543d' : tone === 'bad' ? '#c53030' : '#2d3748';
+            return React.createElement('div', {
+                style: {
+                    background: bg,
+                    color: color,
+                    borderRadius: 999,
+                    padding: '6px 10px',
+                    fontSize: 12,
+                    border: `1px solid ${tone === 'good' ? '#c6f6d5' : tone === 'bad' ? '#fed7d7' : '#e2e8f0'}`
+                }
+            }, React.createElement('strong', null, `${label}: `), value);
+        }
+
+        function List({ title, items }) {
+            const copyToClipboard = () => {
+                navigator.clipboard.writeText(items.join('\n')).catch(console.error);
+            };
+
+            return React.createElement('div', null, [
+                React.createElement('div', { 
+                    key: 'header',
+                    style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 } 
+                }, [
+                    React.createElement('strong', { key: 'title' }, title),
+                    React.createElement('button', {
+                        key: 'copy',
+                        onClick: copyToClipboard,
+                        disabled: items.length === 0,
+                        style: {
+                            padding: '4px 8px',
+                            fontSize: 11,
+                            border: '1px solid #ccc',
+                            borderRadius: 4,
+                            backgroundColor: '#f9f9f9',
+                            cursor: items.length ? 'pointer' : 'not-allowed'
+                        }
+                    }, 'Copy')
+                ]),
+                React.createElement('div', {
+                    key: 'list',
+                    style: {
+                        maxHeight: 180,
+                        overflow: 'auto',
+                        border: '1px solid #e2e8f0',
+                        borderRadius: 8,
+                        padding: 8,
+                        backgroundColor: '#fafafa'
+                    }
+                }, items.length === 0 ? 
+                    React.createElement('div', { style: { color: '#999', fontStyle: 'italic' } }, 'No items') :
+                    items.map((item, i) => React.createElement('div', {
+                        key: `${item}-${i}`,
+                        style: {
+                            fontFamily: 'Fira Code, monospace',
+                            fontSize: 12,
+                            padding: '2px 0',
+                            borderBottom: i < items.length - 1 ? '1px solid #eee' : 'none'
+                        }
+                    }, item))
+                )
+            ]);
+        }
+
+        // Demo App
+        function DemoApp() {
+            const allowedValues = new Set([
+                "A123", "B456", "C789", "SKU-999", "ITEM-001", 
+                "PROD-789", "CODE-456", "ID-123", "REF-999", "DEMO-001"
+            ]);
+
+            return React.createElement(PasteSelect, {
+                validate: inMemorySetValidator(allowedValues),
+                onChange: (result) => {
+                    console.log('📊 Demo Results:', {
+                        totalParsed: result.parse.uniques.length,
+                        validCount: result.validate.valid.length,
+                        invalidCount: result.validate.invalid.length,
+                        duplicateCount: result.parse.duplicates.length
+                    });
+                }
+            });
+        }
+
+        // Render the demo
+        ReactDOM.render(React.createElement(DemoApp), document.getElementById('demo-root'));
+    </script>
+</body>
+</html>
